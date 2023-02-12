@@ -1,0 +1,25 @@
+{
+    "name": "remils/router",
+    "description": "Router",
+    "keywords": [
+        "router"
+    ],
+    "version": "1.0",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/remils/router",
+    "authors": [
+        {
+            "name": "Sergey Zatulivetrov",
+            "email": "remils@mail.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Remils\\Router\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0"
+    }
+}
