@@ -4,12 +4,18 @@ namespace Remils\Router;
 
 class Route
 {
+    protected string $method;
+
+    protected string $pattern;
+
     public function __construct(
-        protected string $method,
-        protected string $pattern,
+        $method,
+        $pattern,
         protected string $controller,
         protected string $action
     ) {
+        $this->method  = strtoupper($method);
+        $this->pattern = sprintf('#^%s$#i', trim($pattern, '/'));
     }
 
     public function method(): string

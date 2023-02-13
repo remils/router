@@ -47,15 +47,19 @@ class Kernel
         return $this;
     }
 
-    public function handle(array $request): void
+    public function handle(): void
     {
-        $dispatch = $this->router->match($request['method'], $request['url']);
+        $dispatch = $this->router->match($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
         if ($dispatch) {
-            $reflectionClass = new ReflectionClass($dispatch->route()->controller());
+            $controller = $dispatch->route()->controller();
+            $action     = $dispatch->route()->action();
+            $matches    = $dispatch->matches();
+
+            $reflectionClass = new ReflectionClass($controller);
             $instance        = $reflectionClass->newInstanceArgs();
 
-            call_user_func([$instance, $dispatch->route()->action()], ...$dispatch->matches());
+            call_user_func_array([$instance, $action], $matches);
         }
     }
 }
@@ -68,20 +72,10 @@ $routes = [
 $kernel = new Kernel();
 $kernel->registerRoutes($routes);
 
-$kernel->handle([
-    'method' => 'GET',
-    'url'    => '/posts'
-]); // Posts
+// $_SERVER['REQUEST_METHOD'] = 'GET';
+// $_SERVER['REQUEST_URI']    = '/posts/1995?filter=one';
 
-$kernel->handle([
-    'method' => 'GET',
-    'url'    => '/posts/1995'
-]); // Post 1995
-
-$kernel->handle([
-    'method' => 'GET',
-    'url'    => '/posts/slug'
-]); //
+$kernel->handle();
 ```
 
 ## License

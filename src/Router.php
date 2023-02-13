@@ -13,8 +13,11 @@ class Router
         return $this;
     }
 
-    public function match(string $method, string $url): ?Dispatch
+    public function match(string $method, string $uri): ?Dispatch
     {
+        $method = strtoupper($method);
+        $url    = trim(substr($uri, 0, strpos($uri, '?')), '/');
+
         foreach ($this->routes as $route) {
             /** @var Route $route */
 
@@ -22,9 +25,7 @@ class Router
                 continue;
             }
 
-            $pattern = sprintf('#^%s$#i', $route->pattern());
-
-            if (preg_match($pattern, $url, $matches)) {
+            if (preg_match($route->pattern(), $url, $matches)) {
                 array_shift($matches);
 
                 return new Dispatch($route, $matches);
