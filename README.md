@@ -18,14 +18,29 @@ use Remils\Router\Router;
 
 class BlogController
 {
-    public function posts(): void
+    public function index(): void
     {
         echo 'Posts' . PHP_EOL;
     }
 
-    public function post(int $id): void
+    public function create(): void
     {
-        echo 'Post ' . $id . PHP_EOL;
+        echo 'Create post' . PHP_EOL;
+    }
+
+    public function show(int $id): void
+    {
+        echo 'Show post ' . $id . PHP_EOL;
+    }
+
+    public function update(int $id): void
+    {
+        echo 'Update post ' . $id . PHP_EOL;
+    }
+
+    public function delete(int $id): void
+    {
+        echo 'Delete post ' . $id . PHP_EOL;
     }
 }
 
@@ -59,21 +74,25 @@ class Kernel
             $reflectionClass = new ReflectionClass($controller);
             $instance        = $reflectionClass->newInstanceArgs();
 
-            call_user_func_array([$instance, $action], $matches);
+            $reflectionMethod = new ReflectionMethod($controller, $action);
+            $reflectionMethod->invokeArgs($instance, $matches);
         }
     }
 }
 
 $routes = [
-    new Route('GET', '/posts', BlogController::class, 'posts'),
-    new Route('GET', '/posts/(\d+)', BlogController::class, 'post'),
+    Route::get('/posts', BlogController::class, 'index'),
+    Route::post('/posts', BlogController::class, 'create'),
+    Route::get('/posts/(\d+)', BlogController::class, 'show'),
+    Route::put('/posts/(\d+)', BlogController::class, 'update'),
+    Route::delete('/posts/(\d+)', BlogController::class, 'delete'),
 ];
 
 $kernel = new Kernel();
 $kernel->registerRoutes($routes);
 
 // $_SERVER['REQUEST_METHOD'] = 'GET';
-// $_SERVER['REQUEST_URI']    = '/posts/1995?filter=one';
+// $_SERVER['REQUEST_URI']    = '/posts/1995';
 
 $kernel->handle();
 ```
